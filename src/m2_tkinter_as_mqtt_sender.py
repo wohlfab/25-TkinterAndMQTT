@@ -23,9 +23,16 @@ Authors: David Mutchler, Vibha Alangar, Matt Boutell, Dave Fisher,
 
 import tkinter
 from tkinter import ttk
-
+import mqtt_remote_method_calls as com
+import time
 
 def main():
+    name1 = input("Enter one name (subscriber): ")
+    name2 = input("Enter another name (publisher): ")
+
+    mqtt_client = com.MqttClient()
+    mqtt_client.connect(name1, name2)
+    time.sleep(1)
     """ Constructs a GUI that will be used MUCH later to control EV3. """
     # -------------------------------------------------------------------------
     # DONE: 2. Follow along with the video to make a remote control GUI
@@ -44,6 +51,7 @@ def main():
     left_speed_entry.insert(0, "600")
     left_speed_entry.grid(row = 0, column = 0)
 
+
     right_speed_label = ttk.Label(main_frame, text="Right")
     right_speed_label.grid(row = 1, column = 7)
     right_speed_entry = ttk.Entry(main_frame, width=8, justify=tkinter.RIGHT)
@@ -52,8 +60,8 @@ def main():
 
     forward_button = ttk.Button(main_frame, text="Forward")
     forward_button.grid(row = 3, column = 3)
-    forward_button['command'] = lambda: print("Forward button")
-    root.bind('<Up>', lambda event: print("Forward key"))
+    forward_button['command'] = lambda: mqtt_client.send_message("say_it", ['forward button'])
+    root.bind('<Up>', lambda event: mqtt_client.send_message("say_it", ['forward key']))
 
     left_button = ttk.Button(main_frame, text="Left")
     left_button.grid(row = 4, column = 2)
